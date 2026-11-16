@@ -5,12 +5,20 @@ Ketuk kepingan untuk memutarnya sampai semua garis tersambung. Level tanpa
 batas, tanpa waktu, tanpa skor. **Gratis, tanpa iklan, tanpa pembelian, offline**
 (APK tidak meminta izin internet).
 
-## Mode
+## Mode (semua gratis)
 
 - **Terang**: sambungkan semua garis. Tidak boleh ada ujung yang menggantung
   atau keluar papan.
 - **Gelap**: kebalikannya. Putuskan semua sambungan sampai tidak ada kepingan
   yang saling menyentuh.
+- **Hex**: aturan Terang di papan segi enam (kepingan berputar 60°).
+- **Energi**: satu kepingan adalah sumber listrik. Putar kabel sampai semua
+  lampu menyala.
+- **Tantangan harian**: satu papan besar per hari, modenya bergantian,
+  dengan hitungan hari beruntun.
+
+Tombol **Petunjuk** memutar satu kepingan yang masih salah ke posisi benar,
+gratis tanpa batas.
 
 Level dibuat dari seed, jadi level N selalu sama di semua HP. Papan membesar
 pelan-pelan sampai 7×11. Progres, posisi kepingan di level yang sedang

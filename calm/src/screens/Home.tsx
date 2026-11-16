@@ -1,78 +1,91 @@
-import { Volume2, VolumeX, Vibrate, VibrateOff } from 'lucide-react'
-import type { Mode } from '../game/puzzle'
-import { tilePath } from '../game/Tile'
-import { E, N, S, W } from '../game/puzzle'
-import type { Progress } from '../storage'
+import { CalendarDays, Check, Flame, Vibrate, VibrateOff, Volume2, VolumeX } from 'lucide-react'
+import { Board } from '../game/Board'
+import { MODES, dailyMode, generate, type Level, type Mode } from '../game/puzzle'
+import { MODE_INFO, paletteFor } from '../game/palette'
+import { streak, type Progress } from '../storage'
 
 interface Props {
   progress: Progress
+  today: string
   onPlay: (mode: Mode) => void
+  onDaily: () => void
   onSettings: (patch: Partial<Progress['settings']>) => void
 }
 
-/** Tiny solved loop drawn with the same pieces as the game. */
-export const RING = [E | S, E | W, S | W, N | S, 0, N | S, N | E, E | W, N | W]
+// Solved level 1 of each mode, used as the card picture.
+const PREVIEWS = Object.fromEntries(
+  MODES.map((m) => {
+    const l = generate(m, m === 'energy' ? 2 : 3)
+    return [m, { ...l, tiles: l.solution } satisfies Level]
+  }),
+) as Record<Mode, Level>
 
-function MiniLoop({ color }: { color: string }) {
-  return (
-    <svg viewBox="-8 -8 316 316" className="size-24" aria-hidden>
-      {RING.map((m, i) => {
-        const { d } = tilePath(m)
-        return d ? <path key={i} transform={`translate(${(i % 3) * 100} ${Math.floor(i / 3) * 100})`} d={d} fill="none" stroke={color} strokeWidth="12" strokeLinecap="round" /> : null
-      })}
-      <circle cx="150" cy="150" r="17" fill="none" stroke={color} strokeWidth="12" />
-    </svg>
-  )
-}
-
-export default function Home({ progress, onPlay, onSettings }: Props) {
+export default function Home({ progress, today, onPlay, onDaily, onSettings }: Props) {
   const { sound, haptics } = progress.settings
+  const dailyDone = progress.daily.done.includes(today)
+  const days = streak(progress.daily.done, today)
+  const todayMode = dailyMode(today)
+
   return (
-    <main className="safe flex min-h-dvh flex-col items-center px-6 text-[#3e5a50]">
-      <div className="flex flex-1 flex-col items-center justify-center gap-3 pt-10 text-center">
-        <img src="./logo.png" alt="" width={96} height={96} className="size-24 rounded-[26px] shadow-lg shadow-[#3e5a50]/15" />
-        <h1 className="mt-2 text-5xl font-extrabold tracking-tight">Calm</h1>
-        <p className="text-base text-[#6b8279]">Putar. Sambungkan. Tenang.</p>
-      </div>
+    <main className="safe flex min-h-dvh flex-col items-center px-5 text-[#3e5a50]">
+      <header className="flex w-full max-w-md items-center gap-3 pt-6 pb-4">
+        <img src="./logo.png" alt="" width={52} height={52} className="size-13 rounded-2xl shadow-md shadow-[#3e5a50]/15" />
+        <div>
+          <h1 className="text-3xl leading-none font-extrabold tracking-tight">Calm</h1>
+          <p className="mt-1 text-sm text-[#6b8279]">Putar. Sambungkan. Tenang.</p>
+        </div>
+      </header>
 
-      <div className="flex w-full max-w-sm flex-col gap-3 pb-6">
+      <div className="flex w-full max-w-md flex-1 flex-col gap-3 pb-6">
         <button
           type="button"
-          onClick={() => onPlay('calm')}
-          className="fade-up flex items-center gap-4 rounded-3xl bg-white/70 p-5 text-left shadow-sm ring-1 ring-[#3e5a50]/10 active:scale-[.98]"
+          onClick={onDaily}
+          className="fade-up flex items-center gap-4 rounded-3xl bg-white/75 p-4 text-left shadow-sm ring-1 ring-[#3e5a50]/10 active:scale-[.98]"
         >
-          <MiniLoop color="#3e5a50" />
-          <span className="flex-1">
-            <span className="block text-xl font-extrabold">Terang</span>
-            <span className="block text-sm text-[#6b8279]">Sambungkan semua garis</span>
-            <span className="mt-2 inline-block rounded-full bg-[#3e5a50]/8 px-3 py-1 text-sm font-bold">Level {progress.calm.level}</span>
+          <span className={`grid size-14 shrink-0 place-items-center rounded-2xl ${dailyDone ? 'bg-[#24845f] text-white' : 'bg-[#3e5a50]/8'}`}>
+            {dailyDone ? <Check className="size-7" aria-hidden /> : <CalendarDays className="size-7" aria-hidden />}
           </span>
-        </button>
-        <button
-          type="button"
-          onClick={() => onPlay('dusk')}
-          className="fade-up flex items-center gap-4 rounded-3xl bg-[#121822] p-5 text-left text-[#c3cee0] shadow-sm active:scale-[.98]"
-          style={{ animationDelay: '80ms' }}
-        >
-          <svg viewBox="-8 -8 316 316" className="size-24" aria-hidden>
-            {[W, N, E, S, W, N, E, S, W].map((m, i) => {
-              const { d, ring } = tilePath(m)
-              return (
-                <g key={i} transform={`translate(${(i % 3) * 100} ${Math.floor(i / 3) * 100})`}>
-                  <path d={d} fill="none" stroke="#c3cee0" strokeWidth="12" strokeLinecap="round" />
-                  {ring && <circle cx="50" cy="50" r="17" fill="none" stroke="#c3cee0" strokeWidth="12" />}
-                </g>
-              )
-            })}
-          </svg>
-          <span className="flex-1">
-            <span className="block text-xl font-extrabold">Gelap</span>
-            <span className="block text-sm text-[#7d889b]">Putuskan semua sambungan</span>
-            <span className="mt-2 inline-block rounded-full bg-white/8 px-3 py-1 text-sm font-bold">Level {progress.dusk.level}</span>
+          <span className="min-w-0 flex-1">
+            <span className="block text-lg font-extrabold">Tantangan harian</span>
+            <span className="block text-sm text-[#6b8279]">
+              {dailyDone ? 'Selesai hari ini. Datang lagi besok!' : `Hari ini: ${MODE_INFO[todayMode].name}, papan besar`}
+            </span>
+          </span>
+          <span className="flex shrink-0 flex-col items-center" aria-label={`${days} hari berturut-turut`}>
+            <Flame className={`size-6 ${days ? 'text-[#d9822b]' : 'text-[#6b8279]/40'}`} aria-hidden />
+            <span className="text-sm font-extrabold tabular-nums">{days}</span>
           </span>
         </button>
 
-        <div className="mt-2 flex justify-center gap-2">
+        <div className="grid grid-cols-2 gap-3">
+          {MODES.map((mode, k) => {
+            const pal = paletteFor(mode, 1)
+            const info = MODE_INFO[mode]
+            const preview = PREVIEWS[mode]
+            return (
+              <button
+                key={mode}
+                type="button"
+                onClick={() => onPlay(mode)}
+                className="fade-up flex flex-col rounded-3xl p-4 text-left shadow-sm active:scale-[.98]"
+                style={{ background: pal.bg, color: pal.dark ? '#e6ebf5' : pal.ink, animationDelay: `${60 + k * 50}ms`, boxShadow: pal.dark ? undefined : `inset 0 0 0 1px ${pal.ink}1a` }}
+              >
+                <span className="flex h-24 items-center justify-center">
+                  <Board level={preview} ink={pal.done} done={pal.done} solved={mode !== 'energy'} className="h-full w-auto max-w-full" />
+                </span>
+                <span className="mt-3 block text-lg font-extrabold">{info.name}</span>
+                <span className="block min-h-10 text-xs leading-tight" style={{ color: pal.soft }}>
+                  {info.goal}
+                </span>
+                <span className="mt-2 self-start rounded-full px-3 py-1 text-xs font-bold" style={{ background: `${pal.ink}14` }}>
+                  Level {progress[mode].level}
+                </span>
+              </button>
+            )
+          })}
+        </div>
+
+        <div className="mt-1 flex justify-center gap-2">
           <button
             type="button"
             role="switch"
@@ -92,8 +105,8 @@ export default function Home({ progress, onPlay, onSettings }: Props) {
             {haptics ? <Vibrate className="size-4" /> : <VibrateOff className="size-4" />} Getar {haptics ? 'nyala' : 'mati'}
           </button>
         </div>
-        <p className="pt-2 text-center text-xs text-[#6b8279]/80">
-          Level tanpa batas · gratis · tanpa iklan · v{__APP_VERSION__}
+        <p className="text-center text-xs text-[#6b8279]/80">
+          4 mode · level tanpa batas · petunjuk gratis · tanpa iklan · v{__APP_VERSION__}
         </p>
       </div>
     </main>

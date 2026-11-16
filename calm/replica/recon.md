@@ -18,6 +18,10 @@ Calm has none.
 | Infinite deterministic levels | must | yes |
 | Solved detection (any valid solution) | must | yes |
 | Dark mode: disconnect all | should | yes (Gelap) |
+| Daily challenge | should | yes (Tantangan harian, streak) |
+| HEX board (sister app) | should | yes (Hex) |
+| ENERGY: light bulbs from a source (sister app) | should | yes (Energi) |
+| Hints (paid in original) | could | yes, free and unlimited |
 | Progress saved on device | must | yes |
 | Sound and vibration toggles | should | yes |
 | Replay earlier levels | could | yes |

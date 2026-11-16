@@ -38,8 +38,6 @@ body {
 .safe {
   padding-top: env(safe-area-inset-top);
   padding-bottom: env(safe-area-inset-bottom);
-  padding-left: env(safe-area-inset-left);
-  padding-right: env(safe-area-inset-right);
 }
 
 /* Tiles spin around their own cell centre; the transparent rect sets the box. */
@@ -107,4 +105,24 @@ body {
   .fade-up {
     animation: none;
   }
+}
+
+.ink-fill {
+  transition:
+    fill 450ms ease,
+    stroke 650ms ease;
+}
+
+@keyframes hint-glow {
+  0% {
+    opacity: 0.32;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
+.hint-glow {
+  opacity: 0;
+  animation: hint-glow 1200ms ease-out;
 }
