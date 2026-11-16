@@ -1,0 +1,43 @@
+{
+  "_about": "Themes for an Indonesian anime streaming app. Patterns are Python regular expressions matched case-insensitively against Google Play review text (Indonesian, informal spelling).",
+  "request_patterns": [
+    "\\btolong\\b", "\\bmohon\\b", "\\bsemoga\\b", "\\bsaran\\b", "\\bka?l[ao]u? bisa\\b", "\\btambah(in|kan|i)?\\b",
+    "\\b(se)?harusnya\\b", "\\bbelum ada\\b", "\\b(ga|gak|g|nggak|tidak|tdk|gk) ada (fitur|pilihan|opsi)\\b", "\\bminta\\b", "\\bplis+\\b", "\\bplease\\b", "\\bbalikin\\b", "\\bkembalikan\\b"
+  ],
+  "themes": [
+    {"id": "update_lambat", "label": "Episode baru telat atau tidak di-update", "kind": "complaint",
+     "patterns": ["(update|apdet|up|upload|rilis)\\w*.{0,25}(lama|lambat|telat|lelet|ketinggalan|jarang|slow)", "(lama|lambat|telat|jarang).{0,20}(update|apdet|upload|rilis)", "episode\\w*.{0,30}(belum|blm|ga ?ada|gak ada|tidak ada|telat|ketinggalan|ga muncul|gak muncul|tidak muncul)", "(belum|blm|ga|gak|g|tidak|nggak) (di ?)?(update|apdet)", "\\bongoing\\b", "\\bterbaru\\b.{0,25}(belum|ga|gak|tidak)"]},
+    {"id": "tidak_lengkap", "label": "Anime atau episode tidak lengkap", "kind": "complaint",
+     "patterns": ["(kurang|tidak|tdk|ga|gak|gk|nggak|blm|belum) lengkap", "anime\\w*.{0,20}(ga ?ada|gak ada|tidak ada|ilang|hilang|dihapus|kurang|sedikit)", "(ga|gak|tidak|g) ?ada anime", "(season|musim|movie|ova)\\w*.{0,25}(ga ?ada|gak ada|tidak ada|belum|kurang|ilang|hilang)", "episode\\w*.{0,25}(hilang|ilang|loncat|lompat|acak|kosong|bolong|ke ?skip|ga urut|tidak urut)", "tambah(in|kan)? (anime|donghua|movie)"]},
+    {"id": "error_putar", "label": "Video tidak bisa diputar, error, loading terus", "kind": "complaint",
+     "patterns": ["(ga|gak|gk|g|tidak|tdk|nggak|gabisa|gbs) ?bisa (di ?)?(putar|play|nonton|tonton|dibuka|buka|load|di ?play)", "\\be+r+o+r+\\b", "\\bbugs?\\b", "force close", "keluar sendiri", "\\bcrash", "\\bmacet", "\\bstuck\\b", "layar hitam", "\\bblank\\b", "loading\\w* (terus|mulu|lama|doang|aja)", "\\bbuffer", "muter[- ]muter", "(ga|gak|tidak) (mau )?(jalan|muncul|keluar)"]},
+    {"id": "lambat", "label": "Lemot, lag, berat", "kind": "complaint",
+     "patterns": ["\\blemot", "\\blelet", "\\bn?ge?lag", "\\blag\\b", "\\bberat\\b", "\\bpatah[- ]patah", "\\blambat\\b", "\\blama banget\\b", "\\bngadat"]},
+    {"id": "iklan_tiket", "label": "Iklan, tiket, bayar", "kind": "complaint",
+     "patterns": ["\\biklan", "\\btiket", "\\bads?\\b", "\\bkoin", "\\bpremium\\b", "\\bbayar", "\\bvip\\b", "\\blangganan", "\\bberbayar"]},
+    {"id": "akun_login", "label": "Login, akun, banned", "kind": "complaint",
+     "patterns": ["\\blog ?in\\b", "\\bakun\\b", "\\bdaftar\\b", "\\bverifikasi", "\\botp\\b", "\\bban(ned)?\\b", "\\bdi ?ban\\b", "\\bblokir", "\\bkeluar akun", "\\blogout"]},
+    {"id": "sinkron_riwayat", "label": "Riwayat hilang, tidak sinkron antar perangkat", "kind": "complaint",
+     "patterns": ["\\bsinkron", "\\bsync", "\\briwayat", "\\bhistor[iy]", "(data|akun|riwayat|playlist|bookmark|subscribe|level)\\w*.{0,20}(hilang|ilang|ke ?reset|terhapus|kehapus|balik)", "terakhir (nonton|tonton)", "lanjut(in|kan)? (nonton|tonton)", "\\bbackup"]},
+    {"id": "subtitle", "label": "Subtitle dan terjemahan", "kind": "complaint",
+     "patterns": ["\\bsub(title|nya)?\\b", "\\bterjemah", "\\btranslate", "\\bdub\\b", "bahasa (inggris|indonesia|jepang)"]},
+    {"id": "kualitas_video", "label": "Resolusi dan kualitas video", "kind": "complaint",
+     "patterns": ["\\bresolusi", "\\bkualitas", "\\b(360|480|720|1080)p?\\b", "\\b4k\\b", "\\bburik", "\\bpecah", "\\bburam", "\\bblur"]},
+    {"id": "download", "label": "Download dan nonton offline", "kind": "request",
+     "patterns": ["\\bdownload", "\\bunduh", "\\boffline"]},
+    {"id": "cari_genre", "label": "Pencarian, genre, filter", "kind": "request",
+     "patterns": ["\\bgenre", "\\bfilter", "\\bkategori", "\\bpencarian", "\\bsearch", "(susah|sulit|ribet).{0,15}(cari|nyari|mencari)", "\\brekomendasi"]},
+    {"id": "notifikasi", "label": "Notifikasi episode baru", "kind": "request",
+     "patterns": ["\\bnotif"]},
+    {"id": "jadwal", "label": "Jadwal rilis", "kind": "request",
+     "patterns": ["\\bjadwal", "\\bschedule", "jam (tayang|rilis)", "hari (tayang|rilis)"]},
+    {"id": "server", "label": "Server down, maintenance, koneksi", "kind": "complaint",
+     "patterns": ["\\bserver", "\\bmaintenance", "\\bmt\\b", "\\bdown\\b", "\\bkoneksi", "\\bjaringan", "\\bvpn\\b", "\\bsinyal"]},
+    {"id": "komunitas", "label": "Chat, komentar, level, toxic", "kind": "complaint",
+     "patterns": ["\\bchat", "\\bkomen", "\\btoxic", "\\btoksik", "\\bkomunitas", "\\bvoice\\b", "\\blevel", "\\brank\\b", "\\bspam", "\\badmin", "\\bmoderator", "\\bmute"]},
+    {"id": "tampilan", "label": "Tampilan dan kemudahan pakai", "kind": "complaint",
+     "patterns": ["\\btampilan", "\\bui\\b", "\\bux\\b", "\\bribet", "\\bbingung", "\\bsusah\\b", "\\btema\\b", "\\bnavigasi", "versi (lama|sebelumnya|v2)", "\\bv2\\b"]},
+    {"id": "player", "label": "Pemutar video: kontrol, layar penuh, skip", "kind": "complaint",
+     "patterns": ["\\bplayer", "\\bpemutar", "\\bfull ?screen", "layar penuh", "\\bskip\\b", "\\bopening\\b", "\\bkecepatan", "\\brotasi", "\\blandscape", "\\bpip\\b", "mode (sinematik|malam)", "\\bgeser", "\\bmaju(in)?\\b", "\\bmundur"]}
+  ]
+}
