@@ -232,7 +232,7 @@ export default function Bills() {
           <Empty
             icon={<Repeat className="size-6" />}
             title="Belum ada tagihan rutin"
-            text="Listrik, kos, cicilan, langganan, atau gaji bulanan. Kantong akan mengingatkan atau mencatatnya otomatis."
+            text="Listrik, kos, cicilan, langganan, atau gaji bulanan. Maalun akan mengingatkan atau mencatatnya otomatis."
             action={<Button onClick={openNew}>Tambah</Button>}
           />
         ) : (

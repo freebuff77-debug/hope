@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowDownLeft, ArrowUpRight, ChevronRight, Eye, EyeOff, ReceiptText, Target, Wallet as WalletIcon } from 'lucide-react'
+import { ArrowDownLeft, ArrowUpRight, ChevronRight, DatabaseBackup, Eye, EyeOff, ReceiptText, Target, Wallet as WalletIcon } from 'lucide-react'
 import { useData } from '../state'
 import { Button, Card, CategoryIcon, Empty, Money, Progress, cx } from '../components/ui'
 import { TxGroups } from '../components/TxRow'
+import { backupAge } from './Backup'
 import { budgetStatus, inRange, totalBalance, totals } from '../lib/finance'
 import { formatMoney } from '../lib/money'
 import { addDays, daysBetween, fmtDate, periodRange, toLocalISO } from '../lib/dates'
@@ -12,6 +13,7 @@ import { payBill, skipBill } from '../db/actions'
 import { iconFor } from '../lib/icons'
 
 const HIDE_KEY = 'kantong:hide-balance'
+const logoUrl = `${import.meta.env.BASE_URL}logo.png`
 
 export default function Home() {
   const data = useData()
@@ -32,12 +34,15 @@ export default function Home() {
 
   const budgets = data.budgets.map((b) => budgetStatus(data, b, data.transactions, now)).sort((a, b) => b.ratio - a.ratio)
   const recent = data.transactions.slice(0, 8)
+  const backupDays = backupAge(settings.lastBackupAt)
+  const needsBackup = data.transactions.length >= 5 && (backupDays === null || backupDays > 14)
 
   return (
     <div className="flex flex-col gap-4 px-4">
       <header className="flex min-h-14 items-center justify-between">
-        <h1 className="text-xl font-extrabold tracking-tight">
-          Kantong<span className="text-accent">.</span>
+        <h1 className="flex items-center gap-2 text-xl font-bold tracking-tight">
+          <img src={logoUrl} alt="" className="size-9 rounded-[10px]" width={36} height={36} />
+          Maalun
         </h1>
         <button
           type="button"
@@ -52,17 +57,17 @@ export default function Home() {
         </button>
       </header>
 
-      <section aria-label="Ringkasan saldo" className="rounded-card bg-accent p-5 text-accent-fg">
+      <section aria-label="Ringkasan saldo" className="rounded-card bg-brand p-5 shadow-lg shadow-accent/20">
         <p className="text-sm opacity-85">Total saldo</p>
         <p className="tabular mt-1 text-3xl font-extrabold break-all">{mask(formatMoney(balance, base))}</p>
         <div className="mt-4 grid grid-cols-2 gap-3">
-          <div className="rounded-2xl bg-black/10 p-3">
+          <div className="rounded-2xl bg-white/12 p-3">
             <p className="flex items-center gap-1 text-xs opacity-85">
               <ArrowDownLeft className="size-4" aria-hidden /> Masuk bulan ini
             </p>
             <p className="tabular mt-0.5 font-bold break-all">{mask(formatMoney(t.income, base))}</p>
           </div>
-          <div className="rounded-2xl bg-black/10 p-3">
+          <div className="rounded-2xl bg-white/12 p-3">
             <p className="flex items-center gap-1 text-xs opacity-85">
               <ArrowUpRight className="size-4" aria-hidden /> Keluar bulan ini
             </p>
@@ -97,6 +102,17 @@ export default function Home() {
           })}
         </ul>
       </section>
+
+      {needsBackup && (
+        <Link to="/cadangan" className="flex items-center gap-3 rounded-card border border-accent/30 bg-accent-soft p-4">
+          <DatabaseBackup className="size-6 shrink-0 text-accent" aria-hidden />
+          <span className="min-w-0 flex-1">
+            <span className="block text-sm font-semibold">{backupDays === null ? 'Datamu belum dicadangkan' : `Cadangan terakhir ${backupDays} hari lalu`}</span>
+            <span className="block text-xs text-muted">Simpan cadangan supaya data aman kalau HP hilang atau ganti HP.</span>
+          </span>
+          <span className="text-sm font-semibold text-accent">Cadangkan</span>
+        </Link>
+      )}
 
       {bills.length > 0 && (
         <Card>

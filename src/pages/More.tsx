@@ -1,12 +1,11 @@
-import { useRef, useState, type ReactNode } from 'react'
+import { useState, type ReactNode } from 'react'
 import { Link } from 'react-router-dom'
-import { ChevronRight, Coins, Download, FileSpreadsheet, Heart, Moon, PiggyBank, ReceiptText, Shapes, Trash2, Upload, Wallet } from 'lucide-react'
+import { ChevronRight, Coins, DatabaseBackup, Heart, Moon, PiggyBank, ReceiptText, Shapes, Trash2, Wallet } from 'lucide-react'
 import { useData } from '../state'
 import { Button, Card, Confirm, Field, Input, PageHeader, Segmented, Select, Sheet } from '../components/ui'
 import { CURRENCIES } from '../lib/money'
-import { exportBackup, exportCSV, importBackup, resetAll, setSetting, ensureSeeded } from '../db/actions'
-import { download } from '../lib/files'
-import { toDateKey } from '../lib/dates'
+import { resetAll, setSetting, ensureSeeded } from '../db/actions'
+import { backupAge } from './Backup'
 import type { Settings } from '../types'
 
 function Row({ to, onClick, icon, label, hint }: { to?: string; onClick?: () => void; icon: ReactNode; label: string; hint?: string }) {
@@ -70,21 +69,11 @@ function RatesSheet({ open, onClose }: { open: boolean; onClose: () => void }) {
 export default function More() {
   const data = useData()
   const s = data.settings
-  const fileRef = useRef<HTMLInputElement>(null)
   const [msg, setMsg] = useState<{ tone: 'ok' | 'err'; text: string } | null>(null)
-  const [confirmImport, setConfirmImport] = useState<string | null>(null)
   const [confirmReset, setConfirmReset] = useState(false)
   const [ratesOpen, setRatesOpen] = useState(false)
   const billsDue = data.recurring.filter((r) => r.active && !r.autoAdd).length
-  const saveFile = async (name: string, content: string, type: string, ok: string) => {
-    try {
-      await download(name, content, type)
-      setMsg({ tone: 'ok', text: ok })
-    } catch (err) {
-      // Closing the Android share sheet rejects; that is not an error for the user.
-      if (!(err instanceof Error && /cancel/i.test(err.message))) setMsg({ tone: 'err', text: 'File gagal dibuat. Coba lagi.' })
-    }
-  }
+  const backupDays = backupAge(s.lastBackupAt)
   const missingRates = [...new Set(data.wallets.map((w) => w.currency))].filter((c) => c !== s.baseCurrency && !s.rates[c])
 
   return (
@@ -97,6 +86,19 @@ export default function More() {
             <b>Semua fitur gratis.</b> Tanpa iklan, tanpa langganan, tanpa akun. Datamu tersimpan di HP ini saja.
           </p>
         </Card>
+
+        <Link to="/cadangan" className="flex items-center gap-3 rounded-card bg-brand p-4">
+          <span className="grid size-11 shrink-0 place-items-center rounded-full bg-white/15" aria-hidden>
+            <DatabaseBackup className="size-6" />
+          </span>
+          <span className="min-w-0 flex-1">
+            <span className="block font-bold">Cadangkan data</span>
+            <span className="block text-sm opacity-85">
+              {backupDays === null ? 'Belum pernah. Amankan datamu sekarang.' : backupDays === 0 ? 'Terakhir: hari ini' : `Terakhir: ${backupDays} hari lalu`}
+            </span>
+          </span>
+          <ChevronRight className="size-5" aria-hidden />
+        </Link>
 
         <ul className="rounded-card border border-line bg-surface p-1">
           <Row to="/dompet" icon={<Wallet className="size-5" />} label="Dompet & rekening" hint={`${data.activeWallets.length} aktif`} />
@@ -161,43 +163,6 @@ export default function More() {
           </div>
         </section>
 
-        <section aria-labelledby="data-h" className="rounded-card border border-line bg-surface p-1">
-          <h2 id="data-h" className="px-3 pt-3 pb-1 font-bold">
-            Data & cadangan
-          </h2>
-          <ul>
-            <Row
-              icon={<Download className="size-5" />}
-              label="Ekspor cadangan"
-              hint="File .json berisi semua data dan foto. Simpan di Drive/WA."
-              onClick={async () => {
-                await saveFile(`kantong-cadangan-${toDateKey(new Date())}.json`, await exportBackup(), 'application/json', 'Cadangan siap disimpan.')
-              }}
-            />
-            <Row icon={<Upload className="size-5" />} label="Pulihkan dari cadangan" hint="Pindah HP atau kembalikan data lama" onClick={() => fileRef.current?.click()} />
-            <Row
-              icon={<FileSpreadsheet className="size-5" />}
-              label="Ekspor ke CSV"
-              hint="Buka di Excel atau Google Sheets"
-              onClick={async () => {
-                await saveFile(`kantong-transaksi-${toDateKey(new Date())}.csv`, await exportCSV(), 'text/csv;charset=utf-8', 'CSV siap disimpan.')
-              }}
-            />
-          </ul>
-          <input
-            ref={fileRef}
-            type="file"
-            accept="application/json,.json"
-            className="sr-only"
-            aria-label="Pilih file cadangan"
-            onChange={async (e) => {
-              const f = e.target.files?.[0]
-              e.target.value = ''
-              if (f) setConfirmImport(await f.text())
-            }}
-          />
-        </section>
-
         {msg && (
           <p role="status" className={msg.tone === 'ok' ? 'text-center text-sm text-income' : 'text-center text-sm text-expense'}>
             {msg.text}
@@ -207,25 +172,10 @@ export default function More() {
         <Button variant="danger" onClick={() => setConfirmReset(true)}>
           <Trash2 className="size-4" /> Hapus semua data
         </Button>
-        <p className="pb-4 text-center text-xs text-muted">Kantong v1.0 · gratis & open source</p>
+        <p className="pb-4 text-center text-xs text-muted">Maalun v{__APP_VERSION__} · gratis selamanya</p>
       </div>
 
       <RatesSheet open={ratesOpen} onClose={() => setRatesOpen(false)} />
-      <Confirm
-        open={confirmImport !== null}
-        title="Pulihkan cadangan?"
-        text="Semua data di HP ini akan diganti dengan isi file cadangan."
-        confirmLabel="Pulihkan"
-        onClose={() => setConfirmImport(null)}
-        onConfirm={async () => {
-          try {
-            await importBackup(confirmImport!)
-            setMsg({ tone: 'ok', text: 'Data berhasil dipulihkan.' })
-          } catch (err) {
-            setMsg({ tone: 'err', text: err instanceof Error && err.message.includes('Kantong') ? err.message : 'File tidak bisa dibaca. Pastikan itu cadangan dari Kantong.' })
-          }
-        }}
-      />
       <Confirm
         open={confirmReset}
         title="Hapus semua data?"

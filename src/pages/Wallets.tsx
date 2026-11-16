@@ -75,7 +75,7 @@ function WalletSheet({ open, onClose, wallet }: { open: boolean; onClose: () => 
               </Select>
             )}
           </Field>
-          <Field label="Saldo awal" hint="Saldo sebelum kamu mulai mencatat di Kantong.">
+          <Field label="Saldo awal" hint="Saldo sebelum kamu mulai mencatat di Maalun.">
             {(id) => <AmountInput id={id} value={initial} onChange={setInitial} currency={currency} />}
           </Field>
           <div>
@@ -158,7 +158,7 @@ export default function Wallets() {
         }
       />
       <div className="flex flex-col gap-4 px-4">
-        <section className="rounded-card bg-accent p-5 text-accent-fg">
+        <section className="rounded-card bg-brand p-5">
           <p className="text-sm opacity-85">Total semua dompet aktif ({base})</p>
           <p className="tabular mt-1 text-2xl font-extrabold">{formatMoney(totalBalance(data, data.balances), base)}</p>
         </section>

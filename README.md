@@ -1,4 +1,4 @@
-# Kantong
+# Maalun
 
 Aplikasi catatan keuangan pribadi: pengeluaran, pemasukan, transfer, anggaran,
 tagihan rutin, target tabungan, dan laporan. **Semua fitur gratis**: tanpa
@@ -18,7 +18,7 @@ nama, atau teks yang diambil dari aplikasi aslinya.
 - Tagihan dan transaksi rutin: dicatat otomatis atau diingatkan di Beranda (Bayar / Lewati)
 - Target tabungan dengan progres dan setoran per bulan yang dibutuhkan
 - Laporan harian, mingguan, bulanan, tahunan, atau rentang kustom: grafik arus uang dan donat per kategori
-- Cari dan filter transaksi, mode gelap, cadangan/pulihkan JSON (termasuk foto), ekspor CSV
+- Cari dan filter transaksi, mode gelap, cadangan ke folder Documents/Maalun, Google Drive, atau WhatsApp (termasuk foto), cadangan otomatis mingguan, pulihkan dari file, ekspor CSV
 - Bisa dipasang di Android sebagai aplikasi (PWA) dan jalan offline
 
 ## Menjalankan
@@ -54,5 +54,5 @@ ditandatangani dengan kunci yang sama. Tanpa file itu, build menghasilkan APK
 tanpa tanda tangan. Naikkan `versionCode` di `android/app/build.gradle` setiap
 rilis baru.
 
-Ikon dan splash dibuat dari `assets/` dengan
+Ikon dan splash dibuat dari logo di `assets/source/` dengan `uv run --with pillow python scripts/make_icons.py assets/source/maalun-logo.png`, lalu
 `pnpm dlx @capacitor/assets generate --android`.

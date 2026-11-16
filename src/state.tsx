@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useMemo, type ReactNode } from 'r
 import { useLiveQuery } from 'dexie-react-hooks'
 import { db } from './db/db'
 import { ensureSeeded, processRecurring } from './db/actions'
+import { runAutoBackup } from './db/backup'
 import { DEFAULT_SETTINGS, type Budget, type Category, type Goal, type Recurring, type Settings, type Transaction, type Wallet } from './types'
 import { walletBalances, type Ctx } from './lib/finance'
 import { setStatusBarDark } from './native'
@@ -22,7 +23,7 @@ const DataContext = createContext<AppData | null>(null)
 
 export function DataProvider({ children }: { children: ReactNode }) {
   useEffect(() => {
-    ensureSeeded().then(() => processRecurring())
+    ensureSeeded().then(() => processRecurring()).then(() => runAutoBackup())
     const onVisible = () => document.visibilityState === 'visible' && processRecurring()
     document.addEventListener('visibilitychange', onVisible)
     return () => document.removeEventListener('visibilitychange', onVisible)
@@ -82,7 +83,7 @@ function useTheme(theme: Settings['theme'] | undefined) {
     const apply = () => {
       const dark = theme === 'dark' || (theme !== 'light' && mq.matches)
       document.documentElement.classList.toggle('dark', dark)
-      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b1016' : '#0f766e')
+      document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0a0f1e' : '#0a47e0')
       setStatusBarDark(dark)
     }
     apply()

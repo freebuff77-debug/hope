@@ -12,6 +12,7 @@ import Categories from './pages/Categories'
 import Bills from './pages/Bills'
 import Goals from './pages/Goals'
 import More from './pages/More'
+import Backup from './pages/Backup'
 
 const NAV = [
   { to: '/', label: 'Beranda', icon: HomeIcon },
@@ -85,6 +86,7 @@ export default function App() {
             <Route path="kategori" element={<Categories />} />
             <Route path="tagihan" element={<Bills />} />
             <Route path="target" element={<Goals />} />
+            <Route path="cadangan" element={<Backup />} />
           </Route>
         </Routes>
       </HashRouter>

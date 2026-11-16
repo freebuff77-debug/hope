@@ -204,7 +204,9 @@ export async function addToGoal(id: string, delta: number) {
 
 // ---------- backup ----------
 
-const BACKUP_FORMAT = 'kantong-backup'
+const BACKUP_FORMAT = 'maalun-backup'
+// Files made before the rename to Maalun still restore.
+const ACCEPTED_FORMATS = [BACKUP_FORMAT, 'kantong-backup']
 
 async function blobToDataURL(blob: Blob): Promise<string> {
   const buf = new Uint8Array(await blob.arrayBuffer())
@@ -237,9 +239,14 @@ export async function exportBackup(): Promise<string> {
 }
 
 export async function importBackup(json: string) {
-  const data = JSON.parse(json)
-  if (data?.format !== BACKUP_FORMAT || !Array.isArray(data.transactions)) {
-    throw new Error('File ini bukan cadangan Kantong.')
+  let data
+  try {
+    data = JSON.parse(json)
+  } catch {
+    throw new Error('File ini bukan cadangan Maalun.')
+  }
+  if (!ACCEPTED_FORMATS.includes(data?.format) || !Array.isArray(data.transactions)) {
+    throw new Error('File ini bukan cadangan Maalun.')
   }
   const photos = (data.photos ?? []).map((p: { id: string; data: string }) => ({ id: p.id, blob: dataURLToBlob(p.data) }))
   await db.transaction('rw', db.tables, async () => {

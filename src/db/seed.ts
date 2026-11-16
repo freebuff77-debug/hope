@@ -37,7 +37,7 @@ export function defaultCategories(makeId: () => string): Category[] {
 export function defaultWallets(makeId: () => string, currency: string): Wallet[] {
   const now = Date.now()
   return [
-    { id: makeId(), name: 'Tunai', currency, initialBalance: 0, color: '#0f766e', icon: 'wallet', archived: false, order: 0, createdAt: now },
+    { id: makeId(), name: 'Tunai', currency, initialBalance: 0, color: '#0a47e0', icon: 'wallet', archived: false, order: 0, createdAt: now },
     { id: makeId(), name: 'Rekening Bank', currency, initialBalance: 0, color: '#3b82f6', icon: 'bank', archived: false, order: 1, createdAt: now },
   ]
 }

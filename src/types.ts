@@ -94,6 +94,9 @@ export interface Settings {
   theme: 'system' | 'light' | 'dark'
   weekStart: 0 | 1
   onboarded: boolean
+  lastBackupAt?: number // any manual or automatic backup
+  lastAutoBackupAt?: number
+  autoBackup: boolean // weekly file in Documents/Maalun (Android app only)
 }
 
 export const DEFAULT_SETTINGS: Settings = {
@@ -102,4 +105,5 @@ export const DEFAULT_SETTINGS: Settings = {
   theme: 'system',
   weekStart: 1,
   onboarded: false,
+  autoBackup: true,
 }

@@ -65,6 +65,16 @@ describe('db actions', () => {
     expect(tx.note).toBe('struk')
     const photo = await db.photos.get(tx.photoIds[0])
     expect(await photo!.blob.text()).toBe('hello')
-    await expect(importBackup('{"foo":1}')).rejects.toThrow('bukan cadangan')
+    await expect(importBackup('{"foo":1}')).rejects.toThrow('bukan cadangan Maalun')
+    await expect(importBackup('not json')).rejects.toThrow('bukan cadangan Maalun')
+  })
+
+  it('restores backups made before the rename (kantong-backup)', async () => {
+    const legacy = JSON.parse(await exportBackup())
+    expect(legacy.format).toBe('maalun-backup')
+    legacy.format = 'kantong-backup'
+    legacy.transactions = [{ id: 't1', type: 'income', amount: 5, walletId: legacy.wallets[0].id, date: '2025-01-01T10:00', note: 'lama', photoIds: [], createdAt: 0 }]
+    await importBackup(JSON.stringify(legacy))
+    expect((await db.transactions.get('t1'))?.note).toBe('lama')
   })
 })
