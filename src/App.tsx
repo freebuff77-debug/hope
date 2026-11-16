@@ -27,7 +27,7 @@ function Layout() {
   const showFab = ['/', '/transaksi', '/laporan'].includes(pathname)
   return (
     <div className="mx-auto flex min-h-dvh max-w-md flex-col bg-bg">
-      <main className="flex-1 pb-28">
+      <main className="flex-1 pb-[calc(7rem+env(safe-area-inset-bottom))]">
         <Outlet />
       </main>
       {showFab && (
@@ -35,7 +35,7 @@ function Layout() {
           type="button"
           onClick={() => nav('/tx/new')}
           aria-label="Tambah transaksi"
-          className="fixed right-[max(1rem,calc(50%-14rem+1rem))] bottom-24 z-20 grid size-14 place-items-center rounded-2xl bg-accent text-accent-fg shadow-lg shadow-black/20 active:scale-95"
+          className="fixed right-[max(1rem,calc(50%-14rem+1rem))] bottom-fab z-20 grid size-14 place-items-center rounded-2xl bg-accent text-accent-fg shadow-lg shadow-black/20 active:scale-95"
         >
           <Plus className="size-7" />
         </button>

@@ -1,10 +1,12 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
-import { registerSW } from 'virtual:pwa-register'
 import './index.css'
 import App from './App'
+import { isNative, setupNative } from './native'
 
-registerSW({ immediate: true })
+// The APK ships its files locally; a service worker would only risk serving stale builds.
+if (!isNative) import('virtual:pwa-register').then(({ registerSW }) => registerSW({ immediate: true }))
+setupNative()
 
 createRoot(document.getElementById('root')!).render(
   <StrictMode>

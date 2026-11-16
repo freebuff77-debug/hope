@@ -4,6 +4,7 @@ import { db } from './db/db'
 import { ensureSeeded, processRecurring } from './db/actions'
 import { DEFAULT_SETTINGS, type Budget, type Category, type Goal, type Recurring, type Settings, type Transaction, type Wallet } from './types'
 import { walletBalances, type Ctx } from './lib/finance'
+import { setStatusBarDark } from './native'
 
 export interface AppData extends Ctx {
   wallets: Wallet[]
@@ -82,6 +83,7 @@ function useTheme(theme: Settings['theme'] | undefined) {
       const dark = theme === 'dark' || (theme !== 'light' && mq.matches)
       document.documentElement.classList.toggle('dark', dark)
       document.querySelector('meta[name="theme-color"]')?.setAttribute('content', dark ? '#0b1016' : '#0f766e')
+      setStatusBarDark(dark)
     }
     apply()
     mq.addEventListener('change', apply)

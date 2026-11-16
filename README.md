@@ -36,3 +36,23 @@ Unggah folder `dist/` ke hosting statis gratis (GitHub Pages, Cloudflare Pages,
 Netlify). Untuk GitHub Pages di subfolder, build dengan
 `BASE_PATH=/nama-repo/ pnpm build`. Buka alamatnya di Chrome Android, lalu
 menu ⋮ → **Instal aplikasi**.
+
+## Membuat APK Android
+
+Butuh JDK 21 dan Android SDK (platform 36). Aplikasi dibungkus dengan Capacitor;
+semua data tetap tersimpan di HP.
+
+```bash
+pnpm android:apk
+# hasil: android/app/build/outputs/apk/release/app-release.apk
+```
+
+APK rilis ditandatangani dengan kunci di `android/keystore.properties` dan
+`android/kantong-release.jks`. Keduanya sengaja tidak masuk git. **Simpan
+cadangannya**: update aplikasi hanya bisa dipasang di atas versi lama kalau
+ditandatangani dengan kunci yang sama. Tanpa file itu, build menghasilkan APK
+tanpa tanda tangan. Naikkan `versionCode` di `android/app/build.gradle` setiap
+rilis baru.
+
+Ikon dan splash dibuat dari `assets/` dengan
+`pnpm dlx @capacitor/assets generate --android`.

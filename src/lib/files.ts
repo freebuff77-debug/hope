@@ -1,3 +1,5 @@
+import { isNative, shareFile } from '../native'
+
 /** Downscales a photo on the device so receipts stay small in IndexedDB. */
 export async function compressImage(file: Blob, maxSide = 1600, quality = 0.8): Promise<Blob> {
   try {
@@ -17,8 +19,9 @@ export async function compressImage(file: Blob, maxSide = 1600, quality = 0.8): 
   }
 }
 
-export function download(filename: string, content: string | Blob, type = 'application/json') {
-  const blob = typeof content === 'string' ? new Blob([content], { type }) : content
+export async function download(filename: string, content: string, type = 'application/json') {
+  if (isNative) return shareFile(filename, content)
+  const blob = new Blob([content], { type })
   const url = URL.createObjectURL(blob)
   const a = document.createElement('a')
   a.href = url

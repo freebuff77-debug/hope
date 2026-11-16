@@ -62,6 +62,8 @@ body,
 }
 
 body {
+  /* Edge-to-edge on Android: keep content below the status bar. */
+  padding-top: env(safe-area-inset-top);
   background: var(--bg);
   color: var(--text);
   font-family: var(--font-sans);
@@ -75,6 +77,24 @@ body {
 
 .tabular {
   font-variant-numeric: tabular-nums;
+}
+
+/* Covers the transparent status bar so scrolled content doesn't show behind its icons. */
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0 0 auto;
+  z-index: 40;
+  height: env(safe-area-inset-top);
+  background: var(--bg);
+}
+
+@utility top-safe {
+  top: env(safe-area-inset-top);
+}
+
+@utility bottom-fab {
+  bottom: calc(6rem + env(safe-area-inset-bottom));
 }
 
 .pb-safe {

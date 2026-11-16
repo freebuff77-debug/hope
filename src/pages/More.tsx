@@ -76,6 +76,15 @@ export default function More() {
   const [confirmReset, setConfirmReset] = useState(false)
   const [ratesOpen, setRatesOpen] = useState(false)
   const billsDue = data.recurring.filter((r) => r.active && !r.autoAdd).length
+  const saveFile = async (name: string, content: string, type: string, ok: string) => {
+    try {
+      await download(name, content, type)
+      setMsg({ tone: 'ok', text: ok })
+    } catch (err) {
+      // Closing the Android share sheet rejects; that is not an error for the user.
+      if (!(err instanceof Error && /cancel/i.test(err.message))) setMsg({ tone: 'err', text: 'File gagal dibuat. Coba lagi.' })
+    }
+  }
   const missingRates = [...new Set(data.wallets.map((w) => w.currency))].filter((c) => c !== s.baseCurrency && !s.rates[c])
 
   return (
@@ -162,8 +171,7 @@ export default function More() {
               label="Ekspor cadangan"
               hint="File .json berisi semua data dan foto. Simpan di Drive/WA."
               onClick={async () => {
-                download(`kantong-cadangan-${toDateKey(new Date())}.json`, await exportBackup())
-                setMsg({ tone: 'ok', text: 'Cadangan diunduh.' })
+                await saveFile(`kantong-cadangan-${toDateKey(new Date())}.json`, await exportBackup(), 'application/json', 'Cadangan siap disimpan.')
               }}
             />
             <Row icon={<Upload className="size-5" />} label="Pulihkan dari cadangan" hint="Pindah HP atau kembalikan data lama" onClick={() => fileRef.current?.click()} />
@@ -172,8 +180,7 @@ export default function More() {
               label="Ekspor ke CSV"
               hint="Buka di Excel atau Google Sheets"
               onClick={async () => {
-                download(`kantong-transaksi-${toDateKey(new Date())}.csv`, await exportCSV(), 'text/csv;charset=utf-8')
-                setMsg({ tone: 'ok', text: 'CSV diunduh.' })
+                await saveFile(`kantong-transaksi-${toDateKey(new Date())}.csv`, await exportCSV(), 'text/csv;charset=utf-8', 'CSV siap disimpan.')
               }}
             />
           </ul>

@@ -42,7 +42,7 @@ export function Card({ className, children, as: As = 'section' }: { className?: 
 export function PageHeader({ title, back, actions }: { title: string; back?: boolean; actions?: ReactNode }) {
   const nav = useNavigate()
   return (
-    <header className="sticky top-0 z-10 flex min-h-14 items-center gap-1 bg-bg/90 px-2 backdrop-blur">
+    <header className="sticky top-safe z-10 flex min-h-14 items-center gap-1 bg-bg/90 px-2 backdrop-blur">
       {back ? (
         <IconButton label="Kembali" onClick={() => (history.length > 1 ? nav(-1) : nav('/'))}>
           <ChevronLeft className="size-6" />
