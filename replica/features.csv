@@ -1,0 +1,28 @@
+feature,area,priority,original,clone,notes
+Record expense with category,transactions,must,yes,yes,
+Record income,transactions,must,yes,yes,
+Transfer between wallets,transactions,must,yes,yes,
+Date and time on transactions,transactions,must,yes,yes,
+Notes on transactions,transactions,must,yes,yes,
+Attach photos (camera or gallery),transactions,should,yes,yes,
+Edit and delete transactions,transactions,must,yes,yes,
+Search and filter transactions,transactions,should,unknown,yes,
+Multiple wallets,wallets,must,yes,yes,
+Multi-currency wallets,wallets,must,yes,yes,
+Predefined categories,categories,must,yes,yes,
+Custom categories,categories,must,yes,yes,
+Daily weekly monthly yearly budgets,budgets,must,yes,yes,
+Per-category budget limits,budgets,must,yes,yes,
+Planned vs actual comparison,budgets,must,yes,yes,
+Reports daily weekly monthly yearly custom,reports,must,yes,yes,
+Spending by category chart,reports,must,yes,yes,
+Income and spending trend,reports,must,yes,yes,
+Recurring payments / bill organizer,bills,should,yes,yes,
+Financial goals progress,goals,could,yes,yes,
+Dark mode,settings,could,unknown,yes,
+Backup and restore,settings,should,unknown,yes,free replacement for cloud sync
+CSV export,settings,could,unknown,yes,
+Works offline / installable,platform,must,yes,yes,PWA
+No in-app purchases (everything free),platform,must,no,yes,user requirement
+Cloud sync,platform,skip,unknown,no,needs a paid server; replaced by backup file
+Live exchange rates,platform,skip,unknown,no,paid APIs; user-set rates instead
